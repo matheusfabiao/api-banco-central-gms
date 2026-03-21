@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 import requests
-from sqlalchemy.dialects.sqlite import insert
+from sqlalchemy.dialects.postgresql import insert
 
 from config.database import database
 from config.settings import settings
