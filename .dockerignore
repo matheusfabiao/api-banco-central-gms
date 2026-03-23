@@ -1,0 +1,8 @@
+.venv
+.git
+.gitignore
+__pycache__
+.env.example
+README.md
+normatives.db
+.ruff_cache
