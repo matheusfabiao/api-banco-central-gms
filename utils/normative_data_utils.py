@@ -2,6 +2,8 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
+from models.normative import Normative
+
 
 def __format_date(date_str: str) -> str:
     """
@@ -34,6 +36,9 @@ def __format_url(number: int, normative_type: str) -> str:
 
 
 def format_normative_data(normatives: list[dict]) -> list[dict]:
+    """
+    Formata os dados dos normativos.
+    """
     return [
         {
             'id': normative.get('listItemId'),
@@ -52,26 +57,25 @@ def format_normative_data(normatives: list[dict]) -> list[dict]:
     ]
 
 
-def __get_normative_color(normative: dict) -> str:
-    if normative['normative_type'].lower().startswith('resolução'):
+def __get_normative_color(normative: Normative) -> str:
+    """
+    Retorna a cor do normativo.
+    """
+    if normative.normative_type.lower().startswith('resolução'):
         return '🔴'
-    elif normative['normative_type'].lower().startswith('instrução normativa'):
+    elif normative.normative_type.lower().startswith('instrução normativa'):
         return '🔵'
     else:
         return '🟢'
 
 
-def __get_full_normative_message(normative: dict) -> str:
-    message = f'{__get_normative_color(normative)} *{normative["title"]}*\n'
-    message += f'Publicado em: {normative["date"]}*\n'
-    message += f'Assunto: {normative["content"]}*\n'
-    message += f'Responsável: {normative["responsible"]}*\n'
-    message += f'🔗 *Link Oficial:* {normative["url"]}*\n'
-    return message
-
-
-def format_message(new_normatives: list[dict]) -> str:
-    message = ''
-    for normative in new_normatives:
-        message += __get_full_normative_message(normative)
+def format_message(normative: Normative) -> str:
+    """
+    Formata a mensagem do normativo.
+    """
+    message = f'{__get_normative_color(normative)} *{normative.title}*\n'
+    message += f'Publicado em: {normative.date}*\n'
+    message += f'Assunto: {normative.content}*\n'
+    message += f'Responsável: {normative.responsible}*\n'
+    message += f'🔗 *Link Oficial:* {normative.url}*\n'
     return message

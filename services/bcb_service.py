@@ -1,13 +1,14 @@
 from http import HTTPStatus
 
 import requests
-from sqlalchemy.dialects.postgresql import insert
 
 from config.database import database
+from config.logger import Logger
 from config.settings import settings
 from models.normative import Normative
 from services.whatsapp_service import WhatsappService
 from utils.normative_data_utils import format_normative_data
+from utils.normative_list import NORMATIVE_LIST
 
 
 class BcbService:
@@ -15,8 +16,10 @@ class BcbService:
         self.__base_url = settings.BCB_BASE_URL
         self.__headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
         self.__whatsapp_service = WhatsappService()
+        self.__logger = Logger(__name__)
 
     def __get_normatives(self):
+        self.__logger.info('Fetching normatives...')
         response = requests.get(url=self.__base_url, headers=self.__headers)
 
         if response.status_code != HTTPStatus.OK:
@@ -25,37 +28,29 @@ class BcbService:
         return response.json().get('Rows', [])
 
     def handle_data(self):
-        print('Fetching normatives...')
         data = self.__get_normatives()
         if not data:
             raise ValueError('No normatives found')
-        normatives = [
-            normative
-            for normative in data
-            # if normative.get('TipodoNormativoOWSCHCS') in NORMATIVE_LIST
-        ]
-        if not normatives:
-            return []
-        new_normatives = format_normative_data(normatives)
-        stmt = insert(Normative).values(new_normatives)
-        stmt = stmt.on_conflict_do_nothing(index_elements=['id'])
-        stmt = stmt.returning(Normative.id)
+        raw_normatives = []
         session_generator = database.get_session()
         session = next(session_generator)
         try:
-            result = session.execute(stmt)
-            inserted_normatives = [row[0] for row in result.all()]
+            for normative in data:
+                normative_id = normative.get('listItemId')
+                normative_type = normative.get('TipodoNormativoOWSCHCS')
+                query = session.get(Normative, normative_id)
+                self.__logger.debug(f'Query: {query}')
+                if query or normative_type not in NORMATIVE_LIST:
+                    continue
+                raw_normatives.append(normative)
+            normatives = format_normative_data(raw_normatives)
+            self.__logger.info(f'Found {len(normatives)} new normatives')
+            for normative in normatives:
+                new_normative = Normative(**normative)
+                self.__logger.debug(f'New normative: {new_normative.title}')
+                session.add(new_normative)
+                self.__whatsapp_service.send_message(new_normative)
             session.commit()
         finally:
             session_generator.close()
-        normatives_to_send = [
-            normative
-            for normative in new_normatives
-            if normative['id'] in inserted_normatives
-        ]
-        if normatives_to_send:
-            self.__whatsapp_service.send_message(normatives_to_send)
-            print(f'{len(normatives_to_send)} normatives sent to WhatsApp.')
-        else:
-            print('No new normatives found.')
-        return normatives_to_send
+        return normatives
