@@ -35,7 +35,7 @@ A aplicação monitora e notifica sempre que um dos seguintes tipos de normativo
 
 1. **Clone o repositório:**
    ```bash
-   git clone <url-do-repositorio>
+   git clone https://github.com/matheusfabiao/api-banco-central-gms.git
    cd gms-bcb-api
    ```
 
