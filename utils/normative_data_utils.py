@@ -14,6 +14,13 @@ def __format_date(date_str: str) -> str:
     return datetime.strptime(date, '%d/%m/%Y %H:%M')
 
 
+def __unformat_date(date: datetime) -> str:
+    """
+    Converte um objeto datetime, de formato "%Y-%m-%d %H:%M:%S" para uma string no formato "%d/%m/%Y %H:%M".
+    """
+    return f'{date.day}/{date.month}/{date.year} às {date.strftime("%H:%M")}'
+
+
 def __format_content(raw_content: str) -> str:
     """
     Remove tags HTML e formata o conteúdo.
@@ -33,7 +40,8 @@ def __format_url(number: int, normative_type: str) -> str:
     """
     Formata a URL do normativo.
     """
-    return f'https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo={normative_type}&numero={number}'  # noqa: E501
+    base_url = 'https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo'
+    return f'{base_url}?tipo={normative_type}&numero={number}'
 
 
 def format_normative_data(normatives: list[dict]) -> list[dict]:
@@ -75,8 +83,8 @@ def format_message(normative: Normative) -> str:
     Formata a mensagem do normativo.
     """
     message = f'{__get_normative_color(normative)} *{normative.title}*\n'
-    message += f'Publicado em: {normative.date}*\n'
-    message += f'Assunto: {normative.content}*\n'
-    message += f'Responsável: {normative.responsible}*\n'
-    message += f'🔗 *Link Oficial:* {normative.url}*\n'
+    message += f'Publicado em: {__unformat_date(normative.date)}\n'
+    message += f'\n*Assunto:*\n{normative.content}\n'
+    message += f'\nResponsável: *{normative.responsible}*\n'
+    message += f'\n🔗 *Link Oficial:*\n{normative.url}\n'
     return message
