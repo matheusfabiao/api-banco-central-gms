@@ -14,7 +14,10 @@ from utils.normative_list import NORMATIVE_LIST
 class BcbService:
     def __init__(self):
         self.__base_url = settings.BCB_BASE_URL
-        self.__headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+        self.__headers = {
+            'User-Agent': 'curl/7.81.0',
+            'Accept': '*/*'
+        }
         self.__whatsapp_service = WhatsappService()
         self.__logger = Logger(__name__)
 

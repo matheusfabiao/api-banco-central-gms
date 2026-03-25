@@ -1,4 +1,5 @@
 from datetime import datetime
+import urllib.parse
 
 from bs4 import BeautifulSoup
 
@@ -49,8 +50,8 @@ def format_normative_data(normatives: list[dict]) -> list[dict]:
             'normative_type': normative.get('TipodoNormativoOWSCHCS'),
             'number': __format_number(normative.get('NumeroOWSNMBR')),
             'url': __format_url(
-                normative.get('NumeroOWSNMBR'),
-                normative.get('TipodoNormativoOWSCHCS'),
+                __format_number(normative.get('NumeroOWSNMBR')),
+                urllib.parse.quote(normative.get('TipodoNormativoOWSCHCS')),
             ),
         }
         for normative in normatives
