@@ -56,20 +56,63 @@ O primeiro passo antes de rodar qualquer coisa é configurar as variáveis de am
    - Configurações da **Evolution API**: `AUTHENTICATION_API_KEY`, `EVOLUTION_INSTANCE_NAME`, `EVOLUTION_GROUP_JID` (ex: `123456789@g.us`).
    - Credenciais do **PostgreSQL** e **Redis**: `DATABASE_CONNECTION_URI`, `APP_DATABASE_URL`, etc.
 
-### Executando com Docker Compose (Forma Recomendada)
+### Executando o Projeto
 
-Para facilitar a execução local, o projeto gerencia seus próprios contêineres e banco de dados via Docker. Foram expostas algumas *tasks* no arquivo `pyproject.toml` para que possamos usar o `taskipy` via `uv` no encapsulamento de comandos:
+O projeto pode ser executado de duas formas, dependendo do seu ambiente e necessidade:
 
-- **Fazer o build e atualizar a imagem:**
+#### 1. Modo Produção (Comandos Docker Compose)
+
+Para ambientes onde não temos ferramentas de desenvolvimento instaladas (como o `uv` e `taskipy`), você deve utilizar os comandos nativos do Docker Compose. Siga a ordem recomendada:
+
+1. **Inicie o banco de dados PostgreSQL:**
+   Primeiramente, suba o container do banco de dados:
+   ```bash
+   docker compose up -d postgres
+   ```
+   *Dica: Você pode conferir as tabelas criadas no banco acessando-o via terminal:*
+   ```bash
+   docker compose exec postgres psql -U postgres
+   ```
+   *E posteriormente digitando `\dt`. Para ver o conteúdo das tabelas, utilize o comando `SELECT * FROM <nome_da_tabela>;`. Em caso de bug ou testes, você pode limpar os dados da tabela com comandos de exclusão como `TRUNCATE TABLE <nome_da_tabela>;`.*
+
+2. **Inicie o serviço do Evolution API:**
+   Após verificar a saúde do container do PostgreSQL, suba o Evolution API:
+   ```bash
+   docker compose up -d evolution-api
+   ```
+   > ⚠️ **IMPORTANTE:** Acesse o manager do Evolution API (por exemplo, `http://localhost:8080/manager`), efetue o login e gerencie a configuração da sua instância do WhatsApp. Pular essa etapa poderá gerar erros na aplicação principal, que depende dessa instância devidamente configurada no Evolution API para funcionar completamente e realizar o envio das mensagens.
+
+3. **Inicie a aplicação principal (App):**
+   Com a instância configurada, suba o serviço da aplicação web:
+   ```bash
+   docker compose up --build app
+   ```
+   *(Para execuções posteriores, você pode usar apenas `docker compose up app`)*
+
+#### 2. Modo Desenvolvimento (Atalhos com Taskipy)
+
+Para o desenvolvimento local, o arquivo `pyproject.toml` expõe atalhos rápidos via Taskipy para facilitar sua vida e evitar comandos longos. Com o ambiente `uv` em uso, você pode executar:
+
+- **Subir o banco de dados em background:**
   ```bash
-  uv run task build
+  uv run task db_up
   ```
-
-- **Subir os containers da aplicação localmente:**
+- **Acessar o terminal do banco (psql):**
   ```bash
-  uv run task run
+  uv run task db_shell
   ```
-
+- **Subir a Evolution API:**
+  ```bash
+  uv run task evo_up
+  ```
+- **Fazer o build e subir a aplicação:**
+  ```bash
+  uv run task app_up
+  ```
+- **Subir a aplicação (sem rebuild):**
+  ```bash
+  uv run task app_run
+  ```
 - **Derrubar os containers:**
   ```bash
   uv run task down

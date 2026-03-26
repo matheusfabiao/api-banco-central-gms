@@ -19,7 +19,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 WORKDIR /app
 
 COPY pyproject.toml /app
-RUN uv sync
+RUN uv sync --no-dev
 
 COPY . .
 
