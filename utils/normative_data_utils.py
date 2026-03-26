@@ -1,5 +1,5 @@
-from datetime import datetime
 import urllib.parse
+from datetime import datetime
 
 from bs4 import BeautifulSoup
 
@@ -16,7 +16,8 @@ def __format_date(date_str: str) -> str:
 
 def __unformat_date(date: datetime) -> str:
     """
-    Converte um objeto datetime, de formato "%Y-%m-%d %H:%M:%S" para uma string no formato "%d/%m/%Y %H:%M".
+    Converte um objeto datetime, de formato "%Y-%m-%d %H:%M:%S" para uma string
+    no formato "%d/%m/%Y %H:%M".
     """
     return f'{date.day}/{date.month}/{date.year} às {date.strftime("%H:%M")}'
 

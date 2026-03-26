@@ -9,18 +9,13 @@ scheduler = BlockingScheduler(timezone=ZoneInfo('America/Sao_Paulo'))
 bcb_service = BcbService()
 logger = Logger(__name__)
 
-scheduler.add_job(
-    bcb_service.handle_data,
-    trigger='cron',
-    hour='6-22',
-    minute='*/10'
-)
+scheduler.add_job(bcb_service.handle_data, trigger='cron', hour='6-22', minute='*/10')
 
 if __name__ == '__main__':
     try:
         logger.info('Starting scheduler...')
         scheduler.start()
-    except (KeyboardInterrupt, SystemExit):
+    except KeyboardInterrupt, SystemExit:
         logger.info('Stopping scheduler...')
         scheduler.shutdown()
         logger.info('Scheduler stopped.')
