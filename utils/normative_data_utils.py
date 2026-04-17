@@ -85,7 +85,7 @@ def format_message(normative: Normative) -> str:
     """
     message = f'{__get_normative_color(normative)} *{normative.title}*\n'
     message += f'Publicado em: {__unformat_date(normative.date)}\n'
-    message += f'\n*Assunto:*\n{normative.content}\n'
+    message += f'\n*Ementa:*\n{normative.content}\n'
     message += f'\nResponsável: *{normative.responsible}*\n'
     message += f'\n🔗 *Link Oficial:*\n{normative.url}\n'
     return message
