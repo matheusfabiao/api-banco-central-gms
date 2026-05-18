@@ -1,9 +1,10 @@
 import urllib.parse
+import zlib
 from datetime import datetime
 
 from bs4 import BeautifulSoup
 
-from models.normative import Normative
+from models.normative import BcbNormative, CvmNormative
 
 
 def __format_date(date_str: str) -> str:
@@ -45,7 +46,7 @@ def __format_url(number: int, normative_type: str) -> str:
     return f'{base_url}?tipo={normative_type}&numero={number}'
 
 
-def format_normative_data(normatives: list[dict]) -> list[dict]:
+def format_bcb_normative_data(normatives: list[dict]) -> list[dict]:
     """
     Formata os dados dos normativos.
     """
@@ -67,7 +68,7 @@ def format_normative_data(normatives: list[dict]) -> list[dict]:
     ]
 
 
-def __get_normative_color(normative: Normative) -> str:
+def __get_bcb_normative_color(normative: BcbNormative) -> str:
     """
     Retorna a cor do normativo.
     """
@@ -79,13 +80,64 @@ def __get_normative_color(normative: Normative) -> str:
         return '🟢'
 
 
-def format_message(normative: Normative) -> str:
+def format_bcb_message(normative: BcbNormative) -> str:
     """
     Formata a mensagem do normativo.
     """
-    message = f'{__get_normative_color(normative)} *{normative.title}*\n'
+    message = f'{__get_bcb_normative_color(normative)} *{normative.title}*\n'
     message += f'Publicado em: {__unformat_date(normative.date)}\n'
     message += f'\n*Ementa:*\n{normative.content}\n'
     message += f'\nResponsável: *{normative.responsible}*\n'
+    message += f'\n🔗 *Link Oficial:*\n{normative.url}\n'
+    return message
+
+
+def generate_cvm_id(url: str) -> int:
+    """
+    Gera um ID numérico único (32-bit integer) baseado na URL da norma.
+    """
+
+    MAX_SIGNED_INT32 = 0x7FFFFFFF
+    UINT32_OFFSET = 0x100000000
+
+    crc = zlib.crc32(url.encode('utf-8'))
+    if crc > MAX_SIGNED_INT32:
+        return crc - UINT32_OFFSET
+    return crc
+
+
+def format_cvm_date(date_str: str) -> datetime:
+    """
+    Tenta converter a string de data da CVM para um objeto datetime.
+    """
+    date_str = date_str.strip()
+    formats = ['%d/%m/%Y %H:%M', '%d/%m/%Y', '%Y-%m-%d']
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+    return datetime.now()
+
+
+def __get_cvm_normative_color(normative: CvmNormative) -> str:
+    """
+    Retorna a cor do normativo.
+    """
+    if normative.normative_type.lower().startswith('resoluções'):
+        return '🔴'
+    elif normative.normative_type.lower().startswith('instruções'):
+        return '🔵'
+    else:
+        return '🟢'
+
+
+def format_cvm_message(normative: CvmNormative) -> str:
+    """
+    Formata a mensagem do normativo.
+    """
+    message = f'{__get_cvm_normative_color(normative)} *{normative.title}*\n'
+    message += f'Publicado em: {__unformat_date(normative.date)}\n'
+    message += f'\n*Ementa:*\n{normative.content}\n'
     message += f'\n🔗 *Link Oficial:*\n{normative.url}\n'
     return message

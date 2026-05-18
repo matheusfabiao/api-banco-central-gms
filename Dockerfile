@@ -14,11 +14,12 @@ ENV PATH="/root/.local/bin/:$PATH"
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+ENV UV_LINK_MODE=copy
 
 # copy code
 WORKDIR /app
 
-COPY pyproject.toml /app
+COPY pyproject.toml uv.lock /app/
 RUN uv sync --no-dev
 
 COPY . .

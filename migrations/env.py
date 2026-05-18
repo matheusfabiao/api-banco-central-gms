@@ -6,7 +6,8 @@ from sqlalchemy import pool
 from alembic import context
 
 from config.settings import settings
-from models.normative import Normative
+from models.normative import Normative, BcbNormative, CvmNormative
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -1,7 +1,7 @@
 [project]
 name = "gms-bcb-api"
-version = "0.1.0"
-description = "API para monitoramento de normativos do Banco Central do Brasil"
+version = "0.2.0"
+description = "API para monitoramento de normativos do Banco Central do Brasil e da CVM"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [

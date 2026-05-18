@@ -173,7 +173,11 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+# Normatives database
 normatives.db
+
+# Docker Configuration override
+docker-compose.override.yml
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
