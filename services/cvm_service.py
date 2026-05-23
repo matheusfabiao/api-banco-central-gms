@@ -8,7 +8,7 @@ from config.logger import Logger
 from config.settings import settings
 from models.normative import CvmNormative
 from services.whatsapp_service import WhatsappService
-from utils.normative_data_utils import format_cvm_date, generate_cvm_id
+from utils.normative_data_utils import format_cvm_date, format_cvm_url, generate_cvm_id
 
 
 class CvmService:
@@ -39,12 +39,13 @@ class CvmService:
         try:
             for normative in data:
                 title = normative.h3.a.text.strip()
-                url = normative.h3.a['href']
-                cvm_id = generate_cvm_id(url)
+                sufix_url = normative.h3.a['href']
+                cvm_id = generate_cvm_id(sufix_url)
 
                 if session.get(CvmNormative, cvm_id):
                     continue
 
+                url = format_cvm_url(sufix_url)
                 content = normative.find('div', class_='contentDesc').text.strip()
                 date = normative.find('div', class_='infoItem').find('p').text.strip()
                 normative_type = (
