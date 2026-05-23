@@ -49,6 +49,7 @@ class CvmService:
                 content = normative.find('div', class_='contentDesc').text.strip()
 
                 if content.endswith('...'):
+                    self.__logger.info(f'Fetching full content for {title}')
                     request = requests.get(url=url, headers=self.__headers)
                     if request.status_code != HTTPStatus.OK:
                         continue

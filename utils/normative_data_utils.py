@@ -51,7 +51,7 @@ def format_cvm_url(sufix: str) -> str:
     Formata a URL do normativo CVM.
     https://conteudo.cvm.gov.br/legislacao/resolucoes/resol243.html
     """
-    return f'https://conteudo.cvm.gov.br/legislacao/{sufix}'
+    return f'https://conteudo.cvm.gov.br{sufix}'
 
 
 def format_bcb_normative_data(normatives: list[dict]) -> list[dict]:
