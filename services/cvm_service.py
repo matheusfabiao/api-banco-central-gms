@@ -47,6 +47,25 @@ class CvmService:
 
                 url = format_cvm_url(sufix_url)
                 content = normative.find('div', class_='contentDesc').text.strip()
+
+                if content.endswith('...'):
+                    request = requests.get(url=url, headers=self.__headers)
+                    if request.status_code != HTTPStatus.OK:
+                        continue
+
+                    soup = BeautifulSoup(request.text, 'html.parser')
+                    content_section = soup.find(
+                        'section',
+                        class_='pull-left contentArticle',
+                    )
+                    if content_section:
+                        content = content_section.find_all('p')[1].text.strip()
+                    else:
+                        self.__logger.warning(
+                            f'Could not find full content for {title}',
+                        )
+                        continue
+
                 date = normative.find('div', class_='infoItem').find('p').text.strip()
                 normative_type = (
                     normative
