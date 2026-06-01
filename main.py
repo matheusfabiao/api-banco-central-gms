@@ -31,7 +31,7 @@ if __name__ == '__main__':
     try:
         logger.info('Starting scheduler...')
         scheduler.start()
-    except KeyboardInterrupt, SystemExit:
+    except (KeyboardInterrupt, SystemExit):  # fmt: skip
         logger.info('Stopping scheduler...')
         scheduler.shutdown()
         logger.info('Scheduler stopped.')

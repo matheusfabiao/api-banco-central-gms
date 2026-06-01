@@ -50,6 +50,7 @@ class WhatsappService:
         payload = {
             'number': self.__group_jid,
             'text': message,
+            'linkPreview': False,
         }
         self.__logger.debug(f'Payload: {payload}')
         response = requests.post(url, headers=self.__headers, json=payload)
