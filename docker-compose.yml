@@ -47,7 +47,7 @@ services:
       - --appendonly
       - "yes"
       - --requirepass
-      - "+-x0v7+1ta1v*1(e4rh)h1m4_9(gx86#xlj76v3fz3bmg6!&2r"
+      - ${CACHE_REDIS_PASSWORD}
 
 volumes:
   evolution_instances:
