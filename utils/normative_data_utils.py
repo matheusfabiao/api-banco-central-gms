@@ -4,6 +4,7 @@ from datetime import datetime
 
 from bs4 import BeautifulSoup
 
+from config.settings import settings
 from models.normative import BcbNormative, CvmNormative
 
 
@@ -97,6 +98,9 @@ def format_bcb_message(normative: BcbNormative) -> str:
     message += f'\n*Ementa:*\n{normative.content}\n'
     message += f'\nResponsável: *{normative.responsible}*\n'
     message += f'\n🔗 *Link Oficial:*\n{normative.url}\n'
+    message += '\n📢 *Panorama Normativo BCB, CVM e COAF*\n'
+    message += 'Fique por dentro das atualizações regulatórias: '
+    message += str(settings.WHATSAPP_GROUP_URL)
     return message
 
 
@@ -148,4 +152,7 @@ def format_cvm_message(normative: CvmNormative) -> str:
     message += f'Publicado em: {__unformat_date(normative.date)}\n'
     message += f'\n*Ementa:*\n{normative.content}\n'
     message += f'\n🔗 *Link Oficial:*\n{normative.url}\n'
+    message += '\n📢 *Panorama Normativo BCB, CVM e COAF*\n'
+    message += 'Fique por dentro das atualizações regulatórias: '
+    message += str(settings.WHATSAPP_GROUP_URL)
     return message

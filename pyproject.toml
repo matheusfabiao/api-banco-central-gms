@@ -49,3 +49,6 @@ run = 'docker compose up'
 rund = 'docker compose up -d'
 down = 'docker compose down'
 downv = 'docker compose down -v'
+
+pre_db_clean = 'task db_up'
+db_clean = 'docker compose exec -T postgres psql -U postgres -c "TRUNCATE TABLE cvm_normatives; TRUNCATE TABLE bcb_normatives;"'
