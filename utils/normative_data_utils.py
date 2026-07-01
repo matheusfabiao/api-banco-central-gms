@@ -98,9 +98,9 @@ def format_bcb_message(normative: BcbNormative) -> str:
     message += f'\n*Ementa:*\n{normative.content}\n'
     message += f'\nResponsável: *{normative.responsible}*\n'
     message += f'\n🔗 *Link Oficial:*\n{normative.url}\n'
-    message += '\n📢 *Panorama Normativo BCB, CVM e COAF*\n'
-    message += 'Fique por dentro das atualizações regulatórias: '
-    message += str(settings.WHATSAPP_GROUP_URL)
+    message += '\n📢 _*Panorama Normativo BCB, CVM e COAF*_\n'
+    message += f'_Fique por dentro das atualizações regulatórias: '
+    message += f'{str(settings.WHATSAPP_GROUP_URL)}_'
     return message
 
 
