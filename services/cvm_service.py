@@ -21,7 +21,9 @@ class CvmService:
     def __get_normatives(self):
         self.__logger.info('Fetching CVM normatives...')
 
-        response = requests.get(url=self.__base_url, headers=self.__headers)
+        response = requests.get(
+            url=self.__base_url, headers=self.__headers, timeout=(5, 30),
+        )
 
         if response.status_code != HTTPStatus.OK:
             raise Exception(f'Error: {response.status_code} - {response.text}')
